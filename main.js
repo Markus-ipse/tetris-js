@@ -8,6 +8,7 @@ const merge = f => xs => ys => xs.map((_, i) => f(xs[i])(ys[i]));
 const add = x => y => x + y;
 const and = x => y => x && y;
 const any = p => xs => xs.some(p);
+const slice = start => end => xs => xs.slice(start, end);
 
 const Piece = {
   I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -25,3 +26,4 @@ M.rotate = pipe(transpose)(reflect);
 M.merge = f => merge(merge(f));
 M.and = M.merge(and);
 M.any = p => any(any(p));
+M.slice = from => to => pipe(slice(from.y)(to.y))(map(slice(from.x)(to.x)));
