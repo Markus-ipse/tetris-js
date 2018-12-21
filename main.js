@@ -6,6 +6,8 @@ const reverse = xs => xs.reverse();
 const reflect = map(reverse);
 const merge = f => xs => ys => xs.map((_, i) => f(xs[i])(ys[i]));
 const add = x => y => x + y;
+const and = x => y => x && y;
+const any = p => xs => xs.some(p);
 
 const Piece = {
   I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -21,3 +23,5 @@ const M = {};
 M.toString = pipe(map(join("")))(join("\n"));
 M.rotate = pipe(transpose)(reflect);
 M.merge = f => merge(merge(f));
+M.and = M.merge(and);
+M.any = p => any(any(p));
