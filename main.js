@@ -1,9 +1,9 @@
-const join = c => xs => xs.join(c)
-const pipe = f => g => x => g(f(x))
-const map  = f => xs => xs.map(f)
+const join      = c => xs => xs.join(c)
+const pipe      = f => g => x => g(f(x))
+const map       = f => xs => xs.map(f)
 const transpose = xsxs => xsxs[0].map((_, i) => xsxs.map(row => row[i]))
-const reverse = xs => xs.reverse()
-const reflect = map(reverse)
+const reverse   = xs => xs.reverse()
+const reflect   = map(reverse)
 
 const Piece = {
   I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
@@ -15,7 +15,7 @@ const Piece = {
   L: [[0,0,7],[7,7,7],[0,0,0]],
 }
 
-const Matrix = {}
-Matrix.toString = pipe(map(join('')))(join('\n'))
-Matrix.rotate   = pipe(transpose)(reflect)
+const M = {}
+M.toString = pipe(map(join('')))(join('\n'))
+M.rotate   = pipe(transpose)(reflect)
 
