@@ -9,6 +9,9 @@ const add = x => y => x + y;
 const and = x => y => x && y;
 const any = p => xs => xs.some(p);
 const slice = start => end => xs => xs.slice(start, end);
+const replaceFrom = y => xs => ys =>
+  map((x, i) => i >= y ? ys[i-y] : xs[i])(xs);
+
 
 const Piece = {
   I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
