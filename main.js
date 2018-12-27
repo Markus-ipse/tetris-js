@@ -9,8 +9,10 @@ const add = x => y => x + y;
 const and = x => y => x && y;
 const any = p => xs => xs.some(p);
 const slice = start => end => xs => xs.slice(start, end);
-const replaceFrom = y => xs => ys =>
-  map((x, i) => i >= y ? ys[i-y] : xs[i])(xs);
+const replaceFrom = start => ys => xs =>
+  map((x, i) => (i >= start) && (i < start + ys.length)
+    ? ys[i-start]
+    : xs[i])(xs);
 
 
 const Piece = {
@@ -30,3 +32,10 @@ M.merge = f => merge(merge(f));
 M.and = M.merge(and);
 M.any = p => any(any(p));
 M.slice = from => to => pipe(slice(from.y)(to.y))(map(slice(from.x)(to.x)));
+M.replaceFrom = from => small => big =>
+  map((row, i) =>
+    (i >= from.y) && (i < from.y + small.length)
+    ? replaceFrom(from.x)(small[i - from.y])(big[i])
+    : row
+  )(big)
+
