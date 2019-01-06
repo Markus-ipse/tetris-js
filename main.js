@@ -1,5 +1,5 @@
 const join = c => xs => xs.join(c);
-const pipe = f => g => x => g(f(x));
+const pipe = (f, g) => x => g(f(x));
 const map = f => xs => xs.map(f);
 const transpose = xsxs => xsxs[0].map((_, i) => xsxs.map(row => row[i]));
 const reverse = xs => xs.reverse();
@@ -26,16 +26,26 @@ const Piece = {
 };
 
 const M = {};
-M.toString = pipe(map(join("")))(join("\n"));
-M.rotate = pipe(transpose)(reflect);
+M.toString = pipe(
+  map(join("")),
+  join("\n")
+);
+M.rotate = pipe(
+  transpose,
+  reflect
+);
 M.merge = f => merge(merge(f));
 M.and = M.merge(and);
 M.any = p => any(any(p));
-M.slice = from => to => pipe(slice(from.y)(to.y))(map(slice(from.x)(to.x)));
 M.replaceFrom = from => small => big =>
   map((row, i) =>
     (i >= from.y) && (i < from.y + small.length)
     ? replaceFrom(from.x)(small[i - from.y])(big[i])
     : row
   )(big)
+M.slice = from => to =>
+  pipe(
+    slice(from.y)(to.y),
+    map(slice(from.x)(to.x))
+  );
 
