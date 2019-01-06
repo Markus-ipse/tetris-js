@@ -7,13 +7,14 @@ const reflect = map(reverse);
 const merge = f => xs => ys => xs.map((_, i) => f(xs[i])(ys[i]));
 const add = x => y => x + y;
 const and = x => y => x && y;
+const or = x => y => x || y;
 const any = p => xs => xs.some(p);
 const slice = start => end => xs => xs.slice(start, end);
-const replaceFrom = start => ys => xs =>
-  map((x, i) => (i >= start) && (i < start + ys.length)
-    ? ys[i-start]
-    : xs[i])(xs);
+const take = count => xs => slice(0)(count)(xs);
+const drop = start => xs => slice(start)(xs.length)(xs);
+const repeat = c => targetLength => Array(targetLength).fill(c);
 
+const padStart = c => count => xs => [...repeat(c)(count), ...xs];
 
 const Piece = {
   I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -37,15 +38,22 @@ M.rotate = pipe(
 M.merge = f => merge(merge(f));
 M.and = M.merge(and);
 M.any = p => any(any(p));
-M.replaceFrom = from => small => big =>
-  map((row, i) =>
-    (i >= from.y) && (i < from.y + small.length)
-    ? replaceFrom(from.x)(small[i - from.y])(big[i])
-    : row
-  )(big)
 M.slice = from => to =>
   pipe(
     slice(from.y)(to.y),
     map(slice(from.x)(to.x))
   );
 
+M.pad = c => x => y => m =>
+  pipe(
+    padStart(repeat(c)(m[0].length))(y),
+    map(padStart(c)(x))
+  )(m);
+
+const mLog = m => console.log(M.toString(m));
+
+mLog(Piece.L);
+
+console.log();
+
+mLog(M.pad("x")(2)(1)(Piece.L));
