@@ -15,6 +15,8 @@ const take = count => xs => slice(0)(count)(xs);
 const drop = start => xs => slice(start)(xs.length)(xs);
 const repeat = c => targetLength => Array(targetLength).fill(c);
 const padStart = c => count => xs => [...repeat(c)(count), ...xs];
+const gt = x => y => y > x
+const eq = x => y => x == y
 
 const Piece = {
   I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -30,6 +32,7 @@ const M = {};
 M.toString = pipe(map(join(" ")), join("\n"));
 M.rotate = pipe(transpose, reflect);
 M.merge = f => merge(merge(f));
+M.or  = M.merge(or);
 M.and = M.merge(and);
 M.any = p => any(any(p));
 M.slice = from => to =>
@@ -37,6 +40,7 @@ M.slice = from => to =>
     slice(from.y)(to.y),
     map(slice(from.x)(to.x))
   );
+M.make = c => x => y => repeat(repeat(c)(x))(y)
 M.pad = c => x => y => m =>
   pipe(
     padStart(repeat(c)(m[0].length))(y),
@@ -44,18 +48,27 @@ M.pad = c => x => y => m =>
   )(m);
 
 const Tetris = {};
-Tetris.toString = pipe(map(map(x => x == 0 ? '-' : x)), M.toString);
+Tetris.toString = pipe(map(map(x => !x ? '-' : x)), M.toString);
 Tetris.log = m => console.log(Tetris.toString(m) + "\n");
+const defaultTo = c => x => x || c
+//Tetris.merge = M.merge(pipe(or, defaultTo(0))) // TODO: does not work
+//Tetris.merge = M.merge(x => y => x == 0 ? x : (x || y)) // TODO: works but do want it?
+Tetris.hasCollision = m1 => m2 =>
+  M.any(gt(0))(M.and(m1)(m2))
 
 
-const pieces = [
-  M.pad(0)(2)(2)(Piece.L),
-  M.rotate(M.pad(0)(2)(2)(Piece.T)),
-  M.rotate(M.pad(0)(1)(1)(Piece.I)),
-]
+const board  = M.make(0)(10)(5)
+const piece1 = M.rotate(M.pad(0)(2)(2)(Piece.T))
+const piece2 = M.pad(0)(2)(2)(Piece.L)
 
-pieces.map(Tetris.log)
-Tetris.log(
-  reduce(M.merge(or))(pieces[0])(pieces)
-)
+let state = board
+Tetris.log(state)
 
+console.log('Ok merge: ' + !Tetris.hasCollision(state)(piece1))
+console.log(Tetris.merge(state)(piece1)) // TODO: check undefined
+state = Tetris.merge(state)(piece1)
+Tetris.log(state)
+
+console.log('Ok merge: ' + !Tetris.hasCollision(state)(piece2))
+state = Tetris.merge(state)(piece2)
+Tetris.log(state)
