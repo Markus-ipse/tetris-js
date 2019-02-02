@@ -1,3 +1,5 @@
+const { paintByNumber, paintByNumberDebug } = require("./utils");
+
 const join = c => xs => xs.join(c);
 const pipe = (f, g) => x => g(f(x));
 const map = f => xs => xs.map(f);
@@ -29,10 +31,10 @@ const Piece = {
 };
 
 const M = {};
-M.toString = pipe(map(join(" ")), join("\n"));
+M.toString = pipe(map(join("")), join("\n"));
 M.rotate = pipe(transpose, reflect);
 M.merge = f => merge(merge(f));
-M.or  = M.merge(or);
+M.or = M.merge(or);
 M.and = M.merge(and);
 M.any = p => any(any(p));
 M.slice = from => to =>
@@ -48,7 +50,7 @@ M.pad = c => x => y => m =>
   )(m);
 
 const Tetris = {};
-Tetris.toString = pipe(map(map(x => !x ? '-' : x)), M.toString);
+Tetris.toString = pipe(map(map(paintByNumberDebug)), M.toString);
 Tetris.log = m => console.log(Tetris.toString(m) + "\n");
 const defaultTo = c => x => x || c
 //Tetris.merge = M.merge(pipe(or, defaultTo(0))) // TODO: does not work
@@ -56,19 +58,23 @@ const defaultTo = c => x => x || c
 Tetris.hasCollision = m1 => m2 =>
   M.any(gt(0))(M.and(m1)(m2))
 
+const printAllPieces = () =>
+  Object.keys(Piece).map(p => Piece[p]).forEach(Tetris.log);
 
-const board  = M.make(0)(10)(5)
-const piece1 = M.rotate(M.pad(0)(2)(2)(Piece.T))
-const piece2 = M.pad(0)(2)(2)(Piece.L)
+printAllPieces()
 
-let state = board
-Tetris.log(state)
+// const board = M.make(0)(10)(5)
+// const piece1 = M.rotate(M.pad(0)(2)(2)(Piece.T))
+// const piece2 = M.pad(0)(2)(2)(Piece.L)
 
-console.log('Ok merge: ' + !Tetris.hasCollision(state)(piece1))
-console.log(Tetris.merge(state)(piece1)) // TODO: check undefined
-state = Tetris.merge(state)(piece1)
-Tetris.log(state)
+// let state = board
+// Tetris.log(state)
 
-console.log('Ok merge: ' + !Tetris.hasCollision(state)(piece2))
-state = Tetris.merge(state)(piece2)
-Tetris.log(state)
+// console.log('Ok merge: ' + !Tetris.hasCollision(state)(piece1))
+// console.log(Tetris.merge(state)(piece1)) // TODO: check undefined
+// state = Tetris.merge(state)(piece1)
+// Tetris.log(state)
+
+// console.log('Ok merge: ' + !Tetris.hasCollision(state)(piece2))
+// state = Tetris.merge(state)(piece2)
+// Tetris.log(state)
