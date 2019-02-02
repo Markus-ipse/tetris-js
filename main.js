@@ -1,6 +1,7 @@
 const join = c => xs => xs.join(c);
 const pipe = (f, g) => x => g(f(x));
 const map = f => xs => xs.map(f);
+const reduce = f => z => xs => xs.reduce((acc, x) => f(acc)(x), z);
 const transpose = xsxs => xsxs[0].map((_, i) => xsxs.map(row => row[i]));
 const reverse = xs => xs.reverse();
 const reflect = map(reverse);
@@ -48,7 +49,14 @@ Tetris.toString = pipe(map(map(Piece.pretty)), M.toString);
 Tetris.log = m => console.log(Tetris.toString(m) + "\n");
 
 
-Tetris.log(Piece.L);
-Tetris.log(M.pad("0")(4)(4)(Piece.L));
-Tetris.log(M.rotate(M.pad("0")(2)(1)(Piece.L)));
+const pieces = [
+  M.pad(0)(2)(2)(Piece.L),
+  M.rotate(M.pad(0)(2)(2)(Piece.T)),
+  M.rotate(M.pad(0)(1)(1)(Piece.I)),
+]
+
+pieces.map(Tetris.log)
+Tetris.log(
+  reduce(M.merge(or))(pieces[0])(pieces)
+)
 
