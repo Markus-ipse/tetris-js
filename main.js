@@ -13,7 +13,6 @@ const slice = start => end => xs => xs.slice(start, end);
 const take = count => xs => slice(0)(count)(xs);
 const drop = start => xs => slice(start)(xs.length)(xs);
 const repeat = c => targetLength => Array(targetLength).fill(c);
-
 const padStart = c => count => xs => [...repeat(c)(count), ...xs];
 
 const Piece = {
@@ -27,33 +26,23 @@ const Piece = {
 };
 
 const M = {};
-M.toString = pipe(
-  map(join("")),
-  join("\n")
-);
-M.rotate = pipe(
-  transpose,
-  reflect
-);
+M.toString = pipe(map(join("")), join("\n"));
+M.rotate = pipe(transpose, reflect);
 M.merge = f => merge(merge(f));
 M.and = M.merge(and);
 M.any = p => any(any(p));
+M.log = m => console.log(M.toString(m) + "\n");
 M.slice = from => to =>
   pipe(
     slice(from.y)(to.y),
     map(slice(from.x)(to.x))
   );
-
 M.pad = c => x => y => m =>
   pipe(
     padStart(repeat(c)(m[0].length))(y),
     map(padStart(c)(x))
   )(m);
 
-const mLog = m => console.log(M.toString(m));
 
-mLog(Piece.L);
-
-console.log();
-
-mLog(M.pad("x")(2)(1)(Piece.L));
+M.log(Piece.L);
+M.log(M.pad("x")(2)(1)(Piece.L));
