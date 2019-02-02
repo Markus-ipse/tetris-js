@@ -25,7 +25,6 @@ const Piece = {
   J: [[6, 0, 0], [6, 6, 6], [0, 0, 0]],
   L: [[0, 0, 7], [7, 7, 7], [0, 0, 0]]
 };
-Piece.pretty = x => x == 0 ? '-' : x
 
 const M = {};
 M.toString = pipe(map(join(" ")), join("\n"));
@@ -45,7 +44,7 @@ M.pad = c => x => y => m =>
   )(m);
 
 const Tetris = {};
-Tetris.toString = pipe(map(map(Piece.pretty)), M.toString);
+Tetris.toString = pipe(map(map(x => x == 0 ? '-' : x)), M.toString);
 Tetris.log = m => console.log(Tetris.toString(m) + "\n");
 
 
