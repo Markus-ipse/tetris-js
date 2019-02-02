@@ -27,12 +27,11 @@ const Piece = {
 Piece.pretty = x => x == 0 ? '-' : x
 
 const M = {};
-M.toString = pipe(map(pipe(map(Piece.pretty), join(" "))), join("\n"));
+M.toString = pipe(map(join(" ")), join("\n"));
 M.rotate = pipe(transpose, reflect);
 M.merge = f => merge(merge(f));
 M.and = M.merge(and);
 M.any = p => any(any(p));
-M.log = m => console.log(M.toString(m) + "\n");
 M.slice = from => to =>
   pipe(
     slice(from.y)(to.y),
@@ -44,7 +43,12 @@ M.pad = c => x => y => m =>
     map(padStart(c)(x))
   )(m);
 
+const Tetris = {};
+Tetris.toString = pipe(map(map(Piece.pretty)), M.toString);
+Tetris.log = m => console.log(Tetris.toString(m) + "\n");
 
-M.log(Piece.L);
-M.log(M.pad("0")(4)(4)(Piece.L));
-M.log(M.rotate(M.pad("0")(2)(1)(Piece.L)));
+
+Tetris.log(Piece.L);
+Tetris.log(M.pad("0")(4)(4)(Piece.L));
+Tetris.log(M.rotate(M.pad("0")(2)(1)(Piece.L)));
+
