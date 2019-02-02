@@ -24,9 +24,10 @@ const Piece = {
   J: [[6, 0, 0], [6, 6, 6], [0, 0, 0]],
   L: [[0, 0, 7], [7, 7, 7], [0, 0, 0]]
 };
+Piece.pretty = x => x == 0 ? '-' : x
 
 const M = {};
-M.toString = pipe(map(join("")), join("\n"));
+M.toString = pipe(map(pipe(map(Piece.pretty), join(" "))), join("\n"));
 M.rotate = pipe(transpose, reflect);
 M.merge = f => merge(merge(f));
 M.and = M.merge(and);
@@ -45,4 +46,5 @@ M.pad = c => x => y => m =>
 
 
 M.log(Piece.L);
-M.log(M.pad("x")(2)(1)(Piece.L));
+M.log(M.pad("0")(4)(4)(Piece.L));
+M.log(M.rotate(M.pad("0")(2)(1)(Piece.L)));
